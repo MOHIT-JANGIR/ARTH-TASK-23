@@ -1,7 +1,7 @@
 ---
 # tasks file for wp-mysql
 - name: copying mysql yaml file
-  copy:
+  template:
       src: "mysql.yml"
       dest: "/root/mysql.yml"
 
