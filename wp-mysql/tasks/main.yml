@@ -1,0 +1,52 @@
+---
+# tasks file for wp-mysql
+- name: copying mysql yaml file
+  copy:
+      src: "mysql.yml"
+      dest: "/root/mysql.yml"
+
+- name: copying wordpress yaml file
+  copy: 
+      src: "wp.yml"
+      dest: "/root/wordpress.yml"
+
+- name: copying service file
+  copy:
+      src: "svc.yml"
+      dest: "/root/service.yml"
+
+
+- name: creating mysql pod
+  shell: "kubectl apply -f /root/mysql.yml"
+  register: mysql
+
+- name: status of mysql pod
+  debug:
+      var: mysql
+
+- name: creating wordpress pod
+  shell: "kubectl apply -f /root/wordpress.yml"
+  register: wp
+
+- name: status of wordpress pod
+  debug:
+      var: wp
+
+- name: allowing port on service/lb
+  shell: "kubectl apply -f /root/service.yml"
+  register: svc
+
+- name: exposed status of service/lb
+  debug:
+      var: svc
+
+- name: "Pausing playbook for 60 seconds"
+  pause: 
+    seconds: 60
+
+- name: "getting all pods"
+  shell: "kubectl get pods -o wide"
+  register: pods 
+
+- debug:
+    var: "pods.stdout_lines"
